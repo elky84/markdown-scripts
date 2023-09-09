@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'fs';
-import { join } from 'path';
+const fs = require('fs');
+const path = require('path');
 
 function parseMarkdownTable(mdText) {
   const lines = mdText.trim().split('\n');
@@ -21,8 +21,8 @@ function parseMarkdownTable(mdText) {
 }
 
 function createMarkdownFiles(tableData, outputFolder) {
-  if (!existsSync(outputFolder)) {
-    mkdirSync(outputFolder);
+  if (!fs.existsSync(outputFolder)) {
+    fs.mkdirSync(outputFolder);
   }
 
   tableData.forEach((rowData, index) => {
@@ -39,13 +39,14 @@ year: ${year}
 `;
 
     const fileName = `${name.replace(/\s+/g, '_').toLowerCase()}.md`;
-    const filePath = join(outputFolder, fileName);
+    const filePath = path.join(outputFolder, fileName);
 
-    writeFileSync(filePath, meta, { flag: 'w' });
+    fs.writeFileSync(filePath, meta, { flag: 'w' });
   });
 }
+
 function processMarkdownFile(inputFilePath, outputFolder) {
-  const mdText = readFileSync(inputFilePath, 'utf-8');
+  const mdText = fs.readFileSync(inputFilePath, 'utf-8');
   const tableData = parseMarkdownTable(mdText);
   createMarkdownFiles(tableData, outputFolder);
 }
